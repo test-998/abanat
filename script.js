@@ -5,6 +5,7 @@ window.addEventListener('load', () => {
         loadingScreen.classList.add('hidden');
         document.body.style.overflow = 'auto';
         initializeAnimations();
+        initialize360Viewers();
     }, 2000);
 });
 
@@ -309,7 +310,17 @@ const propertyData = {
             'صالة استقبال واسعة',
             'شبكة إنترنت',
             'نظام صوتي'
-        ]
+        ],
+        virtual360: {
+            images: [
+                'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=1200',
+                'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=1200',
+                'https://images.pexels.com/photos/1571453/pexels-photo-1571453.jpeg?auto=compress&cs=tinysrgb&w=1200'
+            ],
+            videos: [
+                'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4'
+            ]
+        }
     },
     apartment1: {
         title: 'شقة عصرية مفروشة',
@@ -641,6 +652,52 @@ function openPropertyModal(propertyId) {
                             </div>`
                         ).join('')}
                     </div>
+                    
+                    ${property.virtual360 ? `
+                    <div style="margin-top: 2rem;">
+                        <h3 style="color: #1a365d; margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700;">جولة افتراضية 360°</h3>
+                        <div class="viewer-tabs">
+                            <div class="viewer-tab active" onclick="switchViewer('images', this)">
+                                <i class="fas fa-camera"></i> صور 360°
+                            </div>
+                            <div class="viewer-tab" onclick="switchViewer('videos', this)">
+                                <i class="fas fa-video"></i> فيديو 360°
+                            </div>
+                        </div>
+                        
+                        <div class="viewer-content active" id="images-viewer">
+                            <div class="viewer-360-container">
+                                <div id="panorama-${propertyId}" class="viewer-360"></div>
+                                <div class="viewer-controls">
+                                    <button class="viewer-btn" onclick="resetView('${propertyId}')" title="إعادة تعيين العرض">
+                                        <i class="fas fa-home"></i>
+                                    </button>
+                                    <button class="viewer-btn" onclick="toggleAutoRotate('${propertyId}')" title="دوران تلقائي">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
+                                    <button class="viewer-btn" onclick="toggleFullscreen('${propertyId}')" title="ملء الشاشة">
+                                        <i class="fas fa-expand"></i>
+                                    </button>
+                                </div>
+                                <div class="viewer-info">
+                                    <i class="fas fa-mouse"></i> اسحب للنظر حولك
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="viewer-content" id="videos-viewer">
+                            <div class="viewer-360-container">
+                                <video id="video360-${propertyId}" class="viewer-360" controls>
+                                    <source src="${property.virtual360.videos[0]}" type="video/mp4">
+                                    متصفحك لا يدعم تشغيل الفيديو
+                                </video>
+                                <div class="viewer-info">
+                                    <i class="fas fa-video"></i> فيديو 360 درجة
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    ` : ''}
                 </div>
             </div>
             
@@ -664,6 +721,13 @@ function openPropertyModal(propertyId) {
     modalContent.innerHTML = modalHTML;
     modal.style.display = 'block';
     document.body.style.overflow = 'hidden';
+    
+    // Initialize 360 viewer if property has virtual tour
+    if (property.virtual360) {
+        setTimeout(() => {
+            init360Viewer(propertyId, property.virtual360.images[0]);
+        }, 100);
+    }
 }
 
 function changeMainImage(imageSrc, thumbElement) {
@@ -944,3 +1008,107 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// 360 Degree Viewer Functions
+let viewers = {};
+
+function initialize360Viewers() {
+    // Load Pannellum library
+    if (!window.pannellum) {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js';
+        script.onload = () => {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css';
+            document.head.appendChild(link);
+        };
+        document.head.appendChild(script);
+    }
+}
+
+function init360Viewer(propertyId, imageUrl) {
+    if (!window.pannellum) {
+        setTimeout(() => init360Viewer(propertyId, imageUrl), 500);
+        return;
+    }
+    
+    const viewerId = `panorama-${propertyId}`;
+    
+    if (viewers[propertyId]) {
+        viewers[propertyId].destroy();
+    }
+    
+    viewers[propertyId] = pannellum.viewer(viewerId, {
+        type: 'equirectangular',
+        panorama: imageUrl,
+        autoLoad: true,
+        autoRotate: -2,
+        compass: true,
+        showZoomCtrl: false,
+        showFullscreenCtrl: false,
+        showControls: false,
+        mouseZoom: true,
+        doubleClickZoom: true,
+        draggable: true,
+        keyboardZoom: true,
+        hotSpots: [
+            {
+                pitch: 10,
+                yaw: 0,
+                type: 'info',
+                text: 'غرفة المعيشة الرئيسية',
+                cssClass: 'hotspot'
+            },
+            {
+                pitch: -5,
+                yaw: 90,
+                type: 'info', 
+                text: 'المطبخ',
+                cssClass: 'hotspot'
+            },
+            {
+                pitch: 0,
+                yaw: 180,
+                type: 'info',
+                text: 'الشرفة مع الإطلالة',
+                cssClass: 'hotspot'
+            }
+        ]
+    });
+}
+
+function switchViewer(type, tabElement) {
+    // Update tabs
+    document.querySelectorAll('.viewer-tab').forEach(tab => tab.classList.remove('active'));
+    tabElement.classList.add('active');
+    
+    // Update content
+    document.querySelectorAll('.viewer-content').forEach(content => content.classList.remove('active'));
+    document.getElementById(`${type}-viewer`).classList.add('active');
+}
+
+function resetView(propertyId) {
+    if (viewers[propertyId]) {
+        viewers[propertyId].setPitch(0);
+        viewers[propertyId].setYaw(0);
+        viewers[propertyId].setHfov(100);
+    }
+}
+
+function toggleAutoRotate(propertyId) {
+    if (viewers[propertyId]) {
+        const currentSpeed = viewers[propertyId].getConfig().autoRotate;
+        if (currentSpeed) {
+            viewers[propertyId].setAutoRotate(0);
+        } else {
+            viewers[propertyId].setAutoRotate(-2);
+        }
+    }
+}
+
+function toggleFullscreen(propertyId) {
+    if (viewers[propertyId]) {
+        viewers[propertyId].toggleFullscreen();
+    }
+}

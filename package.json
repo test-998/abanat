@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "pannellum": "^2.5.6",
+    "three": "^0.179.1"
+  }
+}
