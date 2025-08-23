@@ -471,6 +471,58 @@ const propertyData = {
             'تربة خصبة'
         ]
     },
+    villa3: {
+        title: 'فيلا راقية مع حديقة',
+        location: 'الخبر - حي الثقبة',
+        price: '4,200,000 ريال',
+        type: 'للتمليك',
+        agent: {
+            name: 'منى الأحمد',
+            title: 'مستشارة عقارية متخصصة',
+            phone: '+966 50 111 2233',
+            image: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=100'
+        },
+        images: [
+            'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=800',
+            'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=800',
+            'https://images.pexels.com/photos/1571453/pexels-photo-1571453.jpeg?auto=compress&cs=tinysrgb&w=800',
+            'https://images.pexels.com/photos/1571468/pexels-photo-1571468.jpeg?auto=compress&cs=tinysrgb&w=800',
+            'https://images.pexels.com/photos/2724749/pexels-photo-2724749.jpeg?auto=compress&cs=tinysrgb&w=800',
+            'https://images.pexels.com/photos/2121121/pexels-photo-2121121.jpeg?auto=compress&cs=tinysrgb&w=800'
+        ],
+        details: {
+            bedrooms: '6 غرف نوم',
+            bathrooms: '5 حمامات',
+            area: '600 م²',
+            parking: '4 مواقف سيارات',
+            garden: 'حديقة 200 م²',
+            pool: 'مسبح خاص',
+            floors: '3 أدوار',
+            age: 'تحت الإنشاء'
+        },
+        description: 'فيلا راقية تحت الإنشاء في موقع مميز بالخبر. تتميز بالتصميم المعماري الحديث والمساحات الواسعة مع حديقة خاصة ومسبح.',
+        features: [
+            'تصميم معماري فريد',
+            'مسبح خاص',
+            'حديقة واسعة',
+            'مصعد داخلي',
+            'نظام أمان متطور',
+            'تكييف مركزي',
+            'مطبخ إيطالي',
+            'تشطيبات فاخرة'
+        ],
+        virtual360: {
+            images: [
+                'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=1200',
+                'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=1200',
+                'https://images.pexels.com/photos/2724749/pexels-photo-2724749.jpeg?auto=compress&cs=tinysrgb&w=1200'
+            ],
+            videos: [
+                'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4'
+            ],
+            floorPlan: 'https://images.pexels.com/photos/8293778/pexels-photo-8293778.jpeg?auto=compress&cs=tinysrgb&w=800'
+        }
+    },
     shop1: {
         title: 'محل تجاري مميز',
         location: 'مكة المكرمة - العزيزية',
@@ -585,149 +637,8 @@ const propertyData = {
 };
 
 function openPropertyModal(propertyId) {
-    const property = propertyData[propertyId];
-    if (!property) return;
-    
-    const modalHTML = `
-        <div class="property-modal-header" style="position: relative; height: 400px; overflow: hidden; border-radius: 20px 20px 0 0;">
-            <div class="property-gallery" style="position: relative; width: 100%; height: 100%;">
-                <div class="main-image" style="width: 100%; height: 100%;">
-                    <img src="${property.images[0]}" alt="${property.title}" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="gallery-nav" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px;">
-                    ${property.images.map((img, index) => 
-                        `<button class="gallery-thumb ${index === 0 ? 'active' : ''}" onclick="changeMainImage('${img}', this)" style="width: 60px; height: 40px; border: 2px solid ${index === 0 ? '#d4af37' : 'rgba(255,255,255,0.5)'}; border-radius: 5px; overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
-                            <img src="${img}" style="width: 100%; height: 100%; object-fit: cover;">
-                        </button>`
-                    ).join('')}
-                </div>
-            </div>
-            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)); display: flex; align-items: end; padding: 2rem;">
-                <div style="color: white; width: 100%;">
-                    <div style="display: flex; justify-content: space-between; align-items: end; width: 100%;">
-                        <div>
-                            <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem; font-weight: 900;">${property.title}</h2>
-                            <p style="font-size: 1.2rem; margin-bottom: 1rem; opacity: 0.9;"><i class="fas fa-map-marker-alt"></i> ${property.location}</p>
-                            <div style="display: flex; align-items: center; gap: 1rem;">
-                                <span style="background: linear-gradient(45deg, #d4af37, #f59e0b); padding: 8px 20px; border-radius: 25px; font-weight: 600; font-size: 0.9rem;">${property.type}</span>
-                                <span style="font-size: 2rem; font-weight: 900; color: #d4af37;">${property.price}</span>
-                            </div>
-                        </div>
-                        <div class="agent-card" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 15px; border-radius: 15px; text-align: center; min-width: 150px;">
-                            <img src="${property.agent.image}" alt="${property.agent.name}" style="width: 60px; height: 60px; border-radius: 50%; margin-bottom: 10px; border: 3px solid #d4af37;">
-                            <h4 style="font-size: 1rem; margin-bottom: 5px;">${property.agent.name}</h4>
-                            <p style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 10px;">${property.agent.title}</p>
-                            <button onclick="contactAgent('${property.agent.phone}')" style="background: #25d366; color: white; border: none; padding: 8px 15px; border-radius: 20px; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 5px; margin: 0 auto;">
-                                <i class="fab fa-whatsapp"></i> واتساب
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div style="padding: 2.5rem;">
-            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 3rem; margin-bottom: 3rem;">
-                <div>
-                    <h3 style="color: #1a365d; margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700;">وصف العقار</h3>
-                    <p style="line-height: 1.8; color: #4a5568; font-size: 1.1rem; margin-bottom: 2rem;">${property.description}</p>
-                    
-                    <h3 style="color: #1a365d; margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700;">المميزات</h3>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
-                        ${property.features.map(feature => 
-                            `<div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: #f7fafc; border-radius: 8px;">
-                                <i class="fas fa-check-circle" style="color: #10b981; font-size: 1.1rem;"></i>
-                                <span style="font-weight: 500;">${feature}</span>
-                            </div>`
-                        ).join('')}
-                    </div>
-                </div>
-                
-                <div>
-                    <h3 style="color: #1a365d; margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700;">تفاصيل العقار</h3>
-                    <div style="background: #f7fafc; padding: 1.5rem; border-radius: 15px;">
-                        ${Object.entries(property.details).map(([key, value]) => 
-                            `<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e2e8f0;">
-                                <span style="color: #4a5568; font-weight: 500;">${value}</span>
-                            </div>`
-                        ).join('')}
-                    </div>
-                    
-                    ${property.virtual360 ? `
-                    <div style="margin-top: 2rem;">
-                        <h3 style="color: #1a365d; margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700;">جولة افتراضية 360°</h3>
-                        <div class="viewer-tabs">
-                            <div class="viewer-tab active" onclick="switchViewer('images', this)">
-                                <i class="fas fa-camera"></i> صور 360°
-                            </div>
-                            <div class="viewer-tab" onclick="switchViewer('videos', this)">
-                                <i class="fas fa-video"></i> فيديو 360°
-                            </div>
-                        </div>
-                        
-                        <div class="viewer-content active" id="images-viewer">
-                            <div class="viewer-360-container">
-                                <div id="panorama-${propertyId}" class="viewer-360"></div>
-                                <div class="viewer-controls">
-                                    <button class="viewer-btn" onclick="resetView('${propertyId}')" title="إعادة تعيين العرض">
-                                        <i class="fas fa-home"></i>
-                                    </button>
-                                    <button class="viewer-btn" onclick="toggleAutoRotate('${propertyId}')" title="دوران تلقائي">
-                                        <i class="fas fa-sync-alt"></i>
-                                    </button>
-                                    <button class="viewer-btn" onclick="toggleFullscreen('${propertyId}')" title="ملء الشاشة">
-                                        <i class="fas fa-expand"></i>
-                                    </button>
-                                </div>
-                                <div class="viewer-info">
-                                    <i class="fas fa-mouse"></i> اسحب للنظر حولك
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="viewer-content" id="videos-viewer">
-                            <div class="viewer-360-container">
-                                <video id="video360-${propertyId}" class="viewer-360" controls>
-                                    <source src="${property.virtual360.videos[0]}" type="video/mp4">
-                                    متصفحك لا يدعم تشغيل الفيديو
-                                </video>
-                                <div class="viewer-info">
-                                    <i class="fas fa-video"></i> فيديو 360 درجة
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    ` : ''}
-                </div>
-            </div>
-            
-            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                <button onclick="contactForProperty('${propertyId}')" style="background: linear-gradient(45deg, #1a365d, #2d5a87); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-family: 'Cairo', sans-serif; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 10px; font-size: 1rem;">
-                    <i class="fas fa-phone"></i> اتصل بنا
-                </button>
-                <button onclick="requestVisit('${propertyId}')" style="background: linear-gradient(45deg, #d4af37, #f59e0b); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-family: 'Cairo', sans-serif; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 10px; font-size: 1rem;">
-                    <i class="fas fa-calendar"></i> طلب زيارة
-                </button>
-                <button onclick="shareProperty('${propertyId}')" style="background: linear-gradient(45deg, #8b5cf6, #a78bfa); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-family: 'Cairo', sans-serif; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 10px; font-size: 1rem;">
-                    <i class="fas fa-share-alt"></i> مشاركة
-                </button>
-                <button onclick="addToFavorites('${propertyId}')" style="background: linear-gradient(45deg, #ef4444, #f87171); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-family: 'Cairo', sans-serif; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 10px; font-size: 1rem;">
-                    <i class="fas fa-heart"></i> إضافة للمفضلة
-                </button>
-            </div>
-        </div>
-    `;
-    
-    modalContent.innerHTML = modalHTML;
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-    
-    // Initialize 360 viewer if property has virtual tour
-    if (property.virtual360) {
-        setTimeout(() => {
-            init360Viewer(propertyId, property.virtual360.images[0]);
-        }, 100);
-    }
+    // فتح صفحة جديدة للعقار
+    window.open(`property-${propertyId}.html`, '_blank');
 }
 
 function changeMainImage(imageSrc, thumbElement) {
